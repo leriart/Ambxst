@@ -139,13 +139,13 @@ Item {
                 anchors.right: dragHandle.left
                 anchors.rightMargin: 4
                 anchors.verticalCenter: parent.verticalCenter
+                height: 32
                 z: 1
                 sourceComponent: CarouselProgress {
                     anchors.fill: parent
                     frequency: root._animatedWavyFrequency
                     color: root.progressColor
                     amplitudeMultiplier: root._animatedWavyAmplitude
-                    height: 32
                     lineWidth: 4
                     fullLength: sliderContainer.width
                     active: true

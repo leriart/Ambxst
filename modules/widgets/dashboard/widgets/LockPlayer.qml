@@ -110,12 +110,12 @@ StyledRect {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
+            height: 24
             sourceComponent: CarouselProgress {
                 anchors.fill: parent
                 frequency: 4
                 color: Colors.surfaceBright
                 amplitudeMultiplier: 4
-                height: 24
                 lineWidth: 2
                 fullLength: width
                 opacity: 1.0

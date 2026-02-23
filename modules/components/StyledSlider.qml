@@ -165,13 +165,13 @@ Item {
                 anchors.right: hDragHandle.left
                 anchors.rightMargin: root.handleSpacing
                 anchors.verticalCenter: parent.verticalCenter
+                height: hSliderItem.height * root.heightMultiplier
                 z: 1
                 sourceComponent: CarouselProgress {
                     anchors.fill: parent
                     frequency: root.wavyFrequency
                     color: root.progressColor
                     amplitudeMultiplier: root.wavyAmplitude
-                    height: parent.height * heightMultiplier
                     lineWidth: root.thickness
                     fullLength: hSliderItem.width
                     active: root.playing

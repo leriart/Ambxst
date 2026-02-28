@@ -28,23 +28,10 @@ Item {
 
     // Monitor reference and refrence to toplevels on monitor
     readonly property var hyprlandMonitor: AxctlService.monitorFor(screen)
-    readonly property var toplevels: hyprlandMonitor.activeWorkspace.toplevels.values
+    readonly property var toplevels: (!hyprlandMonitor || !hyprlandMonitor.activeWorkspace || !AxctlService.clients.values) ? [] : AxctlService.clients.values.filter(c => c.workspace.id === hyprlandMonitor.activeWorkspace.id)
 
     // Check if there are any windows on the current monitor and workspace
-    readonly property bool hasWindows: {
-        if (!hyprlandMonitor) return false;
-        const activeWorkspaceId = hyprlandMonitor.activeWorkspace.id;
-        const monId = hyprlandMonitor.id;
-        const wins = HyprlandData.windowList;
-        for (let i = 0; i < wins.length; i++) {
-            // We only care about windows on the current monitor and workspace
-            // that are not floating (floating windows usually don't trigger auto-hide)
-            if (wins[i].monitor === monId && wins[i].workspace.id === activeWorkspaceId && !wins[i].floating) {
-                return true;
-            }
-        }
-        return false;
-    }
+    readonly property bool hasWindows: toplevels.length > 0
 
     // Get the bar position for this screen
     readonly property string barPosition: Config.bar?.position ?? "top"
@@ -79,8 +66,7 @@ Item {
 
         // Check all toplevels on active workspcace
         for (var i = 0; i < toplevels.length; i++) {
-            // Checks first if the wayland handle is ready
-            if (toplevels[i].wayland && toplevels[i].wayland.fullscreen == true) {
+            if (toplevels[i].fullscreen == true) {
                return true;
             }
         }

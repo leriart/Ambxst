@@ -4,7 +4,6 @@ import QtQuick.Layouts
 import QtQuick.Effects
 import Quickshell
 import Quickshell.Wayland
-import Quickshell.Hyprland
 import qs.modules.globals
 import qs.modules.theme
 import qs.modules.components
@@ -26,7 +25,7 @@ Item {
 
     // Use the screen's monitor instead of focused monitor for multi-monitor support
     property var currentScreen: null  // This will be set from parent
-    readonly property var monitor: currentScreen ? Hyprland.monitorFor(currentScreen) : Hyprland.focusedMonitor
+    readonly property var monitor: currentScreen ? AxctlService.monitorFor(currentScreen) : AxctlService.focusedMonitor
     readonly property int workspaceGroup: Math.floor((monitor?.activeWorkspace?.id - 1 || 0) / workspacesShown)
 
     // Cache these references
@@ -143,7 +142,7 @@ Item {
         // Close overview and focus the matched window
         Visibilities.setActiveModule("", true);
         Qt.callLater(() => {
-            Hyprland.dispatch(`focuswindow address:${win.address}`);
+            AxctlService.dispatch(`focuswindow address:${win.address}`);
         });
     }
 
@@ -264,14 +263,14 @@ Item {
                                 onClicked: {
                                     if (overviewRoot.draggingTargetWorkspace === -1) {
                                         // Only switch workspace, don't close overview
-                                        Hyprland.dispatch(`workspace ${workspaceValue}`);
+                                        AxctlService.dispatch(`workspace ${workspaceValue}`);
                                     }
                                 }
                                 onDoubleClicked: {
                                     if (overviewRoot.draggingTargetWorkspace === -1) {
                                         // Double click closes overview and switches workspace
                                         Visibilities.setActiveModule("");
-                                        Hyprland.dispatch(`workspace ${workspaceValue}`);
+                                        AxctlService.dispatch(`workspace ${workspaceValue}`);
                                     }
                                 }
                             }
@@ -347,7 +346,7 @@ Item {
                     onDragFinished: targetWorkspace => {
                         overviewRoot.draggingFromWorkspace = -1;
                         if (targetWorkspace !== -1 && targetWorkspace !== windowData?.workspace.id) {
-                            Hyprland.dispatch(`movetoworkspacesilent ${targetWorkspace}, address:${windowData?.address}`);
+                            AxctlService.dispatch(`movetoworkspacesilent ${targetWorkspace}, address:${windowData?.address}`);
                         }
                     }
                     onWindowClicked: {
@@ -355,11 +354,11 @@ Item {
                         // Skip generic focus restoration since we're handling it specifically
                         Visibilities.setActiveModule("", true);
                         Qt.callLater(() => {
-                            Hyprland.dispatch(`focuswindow address:${windowData.address}`);
+                            AxctlService.dispatch(`focuswindow address:${windowData.address}`);
                         });
                     }
                     onWindowClosed: {
-                        Hyprland.dispatch(`closewindow address:${windowData.address}`);
+                        AxctlService.dispatch(`closewindow address:${windowData.address}`);
                     }
                 }
             }

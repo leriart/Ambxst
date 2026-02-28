@@ -4,7 +4,6 @@ import QtQuick.Layouts
 import QtQuick.Effects
 import Quickshell
 import Quickshell.Wayland
-import Quickshell.Hyprland
 import qs.modules.globals
 import qs.modules.theme
 import qs.modules.services
@@ -199,12 +198,12 @@ PanelWindow {
 
                     onTabPressed: {
                         if (searchInput.text.length === 0) {
-                            const current = Hyprland.focusedWorkspace?.id || 1;
+                            const current = AxctlService.focusedWorkspace?.id || 1;
                             const next = current + 1;
                             if (next > Config.workspaces.shown) {
-                                Hyprland.dispatch("workspace 1");
+                                AxctlService.dispatch("workspace 1");
                             } else {
-                                Hyprland.dispatch("workspace r+1");
+                                AxctlService.dispatch("workspace r+1");
                             }
                         } else if (overviewLoader.item) {
                             overviewLoader.item.selectNextMatch();
@@ -213,12 +212,12 @@ PanelWindow {
                     
                     onShiftTabPressed: {
                         if (searchInput.text.length === 0) {
-                            const current = Hyprland.focusedWorkspace?.id || 1;
+                            const current = AxctlService.focusedWorkspace?.id || 1;
                             const prev = current - 1;
                             if (prev < 1) {
-                                Hyprland.dispatch("workspace " + Config.workspaces.shown);
+                                AxctlService.dispatch("workspace " + Config.workspaces.shown);
                             } else {
-                                Hyprland.dispatch("workspace r-1");
+                                AxctlService.dispatch("workspace r-1");
                             }
                         } else if (overviewLoader.item) {
                             overviewLoader.item.selectPrevMatch();
@@ -250,12 +249,12 @@ PanelWindow {
 
                     onLeftPressed: {
                         if (searchInput.text.length === 0) {
-                            const current = Hyprland.focusedWorkspace?.id || 1;
+                            const current = AxctlService.focusedWorkspace?.id || 1;
                             const prev = current - 1;
                             if (prev < 1) {
-                                Hyprland.dispatch("workspace " + Config.workspaces.shown);
+                                AxctlService.dispatch("workspace " + Config.workspaces.shown);
                             } else {
-                                Hyprland.dispatch("workspace r-1");
+                                AxctlService.dispatch("workspace r-1");
                             }
                         } else if (overviewLoader.item) {
                             overviewLoader.item.selectPrevMatch();
@@ -264,12 +263,12 @@ PanelWindow {
 
                     onRightPressed: {
                         if (searchInput.text.length === 0) {
-                            const current = Hyprland.focusedWorkspace?.id || 1;
+                            const current = AxctlService.focusedWorkspace?.id || 1;
                             const next = current + 1;
                             if (next > Config.workspaces.shown) {
-                                Hyprland.dispatch("workspace 1");
+                                AxctlService.dispatch("workspace 1");
                             } else {
-                                Hyprland.dispatch("workspace r+1");
+                                AxctlService.dispatch("workspace r+1");
                             }
                         } else if (overviewLoader.item) {
                             overviewLoader.item.selectNextMatch();

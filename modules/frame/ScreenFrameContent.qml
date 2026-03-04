@@ -7,6 +7,7 @@ import qs.modules.corners
 import qs.modules.services
 import qs.modules.theme
 import qs.config
+import qs.modules.globals
 
 Item {
     id: root
@@ -81,7 +82,7 @@ Item {
     }
 
     // Sidebar expansion logic (synchronized with sidebar active and pinned)
-    readonly property int sidebarExpansion: (frameEnabled && sidebarPinned) ? Math.round((sidebarWidth + sidebarMargin + baseThickness) * _sidebarAnimProgress) : 0
+    readonly property int sidebarExpansion: (frameEnabled && sidebarPinned) ? Math.round((sidebarWidth + baseThickness) * _sidebarAnimProgress) : 0
 
     // --- Side-Specific Thickness Restoration ---
 

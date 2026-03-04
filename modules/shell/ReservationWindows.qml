@@ -127,8 +127,8 @@ Item {
                 if (containBar && frameEnabled) zone += actualFrameSize;
             }
             if (sidebarEnabled && sidebarPosition === "left" && sidebarPinned) {
-                zone += sidebarWidth + sidebarMargin;
-                if (frameEnabled) zone += actualFrameSize;
+                zone += sidebarWidth;
+                zone += frameEnabled ? actualFrameSize : sidebarMargin;
             }
             if (dockEnabled && dockPosition === "left" && dockPinned) zone += dockHeight;
             return zone;
@@ -163,8 +163,8 @@ Item {
                 if (containBar && frameEnabled) zone += actualFrameSize;
             }
             if (sidebarEnabled && sidebarPosition === "right" && sidebarPinned) {
-                zone += sidebarWidth + sidebarMargin;
-                if (frameEnabled) zone += actualFrameSize;
+                zone += sidebarWidth;
+                zone += frameEnabled ? actualFrameSize : sidebarMargin;
             }
             if (dockEnabled && dockPosition === "right" && dockPinned) zone += dockHeight;
             return zone;

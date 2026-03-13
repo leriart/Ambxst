@@ -75,7 +75,7 @@ Item {
 
                         RowLayout {
                             Layout.fillWidth: true
-                            spacing: 8
+                            spacing: 12
 
                             TextField {
                                 visible: modelData !== "ollama"
@@ -85,17 +85,29 @@ Item {
                                 echoMode: TextInput.Password
                                 font.family: Config.theme.font
                                 color: Colors.overSurface
+                                padding: 6
                                 
                                 background: StyledRect {
                                     variant: "internalbg"
                                     radius: Styling.radius(4)
                                     border.width: keyInput.activeFocus ? 2 : 0
                                     border.color: Styling.srItem("primary")
+                                    anchors.fill: parent
+                                    anchors.leftMargin: -parent.padding
+                                    anchors.rightMargin: -parent.padding
+                                    anchors.topMargin: -parent.padding
+                                    anchors.bottomMargin: -parent.padding
                                 }
                             }
                             Button {
+                                id: saveButton
                                 text: modelData === "ollama" ? (KeyStore.hasKey("ollama") ? "Configured" : "Enable") : "Save"
                                 visible: modelData === "ollama" ? !KeyStore.hasKey("ollama") : true
+                                hoverEnabled: true
+                                leftPadding: 6
+                                rightPadding: 6
+                                topPadding: 4
+                                bottomPadding: 4
                                 onClicked: {
                                     if (modelData === "ollama") {
                                         KeyStore.setKey("ollama", "enabled")
@@ -105,31 +117,58 @@ Item {
                                     }
                                 }
                                 background: StyledRect {
-                                    variant: parent.down ? "primary" : "surfaceVariant"
+                                    variant: saveButton.down ? "overprimary" : (saveButton.hovered ? "primaryfocus" : "primary")
                                     radius: Styling.radius(4)
                                 }
-                                contentItem: Text {
-                                    text: parent.text
-                                    color: Colors.overSurface
-                                    font.family: Config.theme.font
-                                    horizontalAlignment: Text.AlignHCenter
-                                    verticalAlignment: Text.AlignVCenter
+                                contentItem: Item {
+                                    implicitWidth: saveButtonLabel.implicitWidth + saveButton.leftPadding + saveButton.rightPadding
+                                    implicitHeight: saveButtonLabel.implicitHeight + saveButton.topPadding + saveButton.bottomPadding
+
+                                    Text {
+                                        id: saveButtonLabel
+                                        text: saveButton.text
+                                        color: Colors.overPrimary
+                                        font.family: Config.theme.font
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                        anchors.fill: parent
+                                        anchors.leftMargin: saveButton.leftPadding
+                                        anchors.rightMargin: saveButton.rightPadding
+                                        anchors.topMargin: saveButton.topPadding
+                                        anchors.bottomMargin: saveButton.bottomPadding
+                                    }
                                 }
                             }
                             Button {
+                                id: clearButton
                                 visible: KeyStore.hasKey(modelData)
                                 text: modelData === "ollama" ? "Disable" : "Clear"
+                                leftPadding: 6
+                                rightPadding: 6
+                                topPadding: 4
+                                bottomPadding: 4
                                 onClicked: KeyStore.deleteKey(modelData)
                                 background: StyledRect {
                                     variant: "error"
                                     radius: Styling.radius(4)
                                 }
-                                contentItem: Text {
-                                    text: parent.text
-                                    color: Colors.overError
-                                    font.family: Config.theme.font
-                                    horizontalAlignment: Text.AlignHCenter
-                                    verticalAlignment: Text.AlignVCenter
+                                contentItem: Item {
+                                    implicitWidth: clearButtonLabel.implicitWidth + clearButton.leftPadding + clearButton.rightPadding
+                                    implicitHeight: clearButtonLabel.implicitHeight + clearButton.topPadding + clearButton.bottomPadding
+
+                                    Text {
+                                        id: clearButtonLabel
+                                        text: clearButton.text
+                                        color: Colors.overError
+                                        font.family: Config.theme.font
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                        anchors.fill: parent
+                                        anchors.leftMargin: clearButton.leftPadding
+                                        anchors.rightMargin: clearButton.rightPadding
+                                        anchors.topMargin: clearButton.topPadding
+                                        anchors.bottomMargin: clearButton.bottomPadding
+                                    }
                                 }
                             }
                         }
@@ -181,7 +220,7 @@ Item {
 
                     RowLayout {
                         Layout.fillWidth: true
-                        spacing: 8
+                        spacing: 12
 
                         TextField {
                             id: customKeyInput
@@ -190,16 +229,28 @@ Item {
                             echoMode: TextInput.Password
                             font.family: Config.theme.font
                             color: Colors.overSurface
+                            padding: 6
                             
                             background: StyledRect {
                                 variant: "internalbg"
                                 radius: Styling.radius(4)
                                 border.width: customKeyInput.activeFocus ? 2 : 0
                                 border.color: Styling.srItem("primary")
+                                anchors.fill: parent
+                                anchors.leftMargin: -parent.padding
+                                anchors.rightMargin: -parent.padding
+                                anchors.topMargin: -parent.padding
+                                anchors.bottomMargin: -parent.padding
                             }
                         }
                         Button {
+                            id: customSaveButton
                             text: "Save"
+                            hoverEnabled: true
+                            leftPadding: 6
+                            rightPadding: 6
+                            topPadding: 4
+                            bottomPadding: 4
                             onClicked: {
                                 if (customKeyInput.text !== "") {
                                     KeyStore.setKey("custom", customKeyInput.text)
@@ -207,31 +258,58 @@ Item {
                                 }
                             }
                             background: StyledRect {
-                                variant: parent.down ? "primary" : "surfaceVariant"
+                                variant: customSaveButton.down ? "overprimary" : (customSaveButton.hovered ? "primaryfocus" : "primary")
                                 radius: Styling.radius(4)
                             }
-                            contentItem: Text {
-                                text: parent.text
-                                color: Colors.overSurface
-                                font.family: Config.theme.font
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
+                            contentItem: Item {
+                                implicitWidth: customSaveButtonLabel.implicitWidth + customSaveButton.leftPadding + customSaveButton.rightPadding
+                                implicitHeight: customSaveButtonLabel.implicitHeight + customSaveButton.topPadding + customSaveButton.bottomPadding
+
+                                Text {
+                                    id: customSaveButtonLabel
+                                    text: customSaveButton.text
+                                    color: Colors.overPrimary
+                                    font.family: Config.theme.font
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    anchors.fill: parent
+                                    anchors.leftMargin: customSaveButton.leftPadding
+                                    anchors.rightMargin: customSaveButton.rightPadding
+                                    anchors.topMargin: customSaveButton.topPadding
+                                    anchors.bottomMargin: customSaveButton.bottomPadding
+                                }
                             }
                         }
                         Button {
+                            id: customClearButton
                             visible: KeyStore.hasKey("custom")
                             text: "Clear"
+                            leftPadding: 6
+                            rightPadding: 6
+                            topPadding: 4
+                            bottomPadding: 4
                             onClicked: KeyStore.deleteKey("custom")
                             background: StyledRect {
                                 variant: "error"
                                 radius: Styling.radius(4)
                             }
-                            contentItem: Text {
-                                text: parent.text
-                                color: Colors.overError
-                                font.family: Config.theme.font
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
+                            contentItem: Item {
+                                implicitWidth: customClearButtonLabel.implicitWidth + customClearButton.leftPadding + customClearButton.rightPadding
+                                implicitHeight: customClearButtonLabel.implicitHeight + customClearButton.topPadding + customClearButton.bottomPadding
+
+                                Text {
+                                    id: customClearButtonLabel
+                                    text: customClearButton.text
+                                    color: Colors.overError
+                                    font.family: Config.theme.font
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    anchors.fill: parent
+                                    anchors.leftMargin: customClearButton.leftPadding
+                                    anchors.rightMargin: customClearButton.rightPadding
+                                    anchors.topMargin: customClearButton.topPadding
+                                    anchors.bottomMargin: customClearButton.bottomPadding
+                                }
                             }
                         }
                     }
@@ -259,6 +337,7 @@ Item {
                         placeholderText: "e.g. https://api.example.com/v1/chat/completions"
                         font.family: Config.theme.font
                         color: Colors.overSurface
+                        padding: 6
                         
                         onTextChanged: {
                             if (Config.ai.customEndpoint !== undefined) {
@@ -271,6 +350,11 @@ Item {
                             radius: Styling.radius(4)
                             border.width: endpointInput.activeFocus ? 2 : 0
                             border.color: Styling.srItem("primary")
+                            anchors.fill: parent
+                            anchors.leftMargin: -parent.padding
+                            anchors.rightMargin: -parent.padding
+                            anchors.topMargin: -parent.padding
+                            anchors.bottomMargin: -parent.padding
                         }
                     }
 
@@ -296,6 +380,7 @@ Item {
                         placeholderText: "curl -X POST {{ENDPOINT}} -H 'Authorization: Bearer {{API_KEY}}' -d @{{BODY_PATH}}"
                         font.family: "Monospace"
                         color: Colors.overSurface
+                        padding: 6
                         
                         onTextChanged: {
                             if (Config.ai.customCurlTemplate !== undefined) {
@@ -308,6 +393,11 @@ Item {
                             radius: Styling.radius(4)
                             border.width: curlInput.activeFocus ? 2 : 0
                             border.color: Styling.srItem("primary")
+                            anchors.fill: parent
+                            anchors.leftMargin: -parent.padding
+                            anchors.rightMargin: -parent.padding
+                            anchors.topMargin: -parent.padding
+                            anchors.bottomMargin: -parent.padding
                         }
                     }
                 }

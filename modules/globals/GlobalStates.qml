@@ -51,21 +51,41 @@ Singleton {
     // ═══════════════════════════════════════════════════════════════
     // COMPOSITOR LAYOUT STATE (persisted via StateService)
     // ═══════════════════════════════════════════════════════════════
-    property string compositorLayout: "dwindle"
-    property bool compositorLayoutReady: true
+    property string compositorLayout: ""
+    property bool compositorLayoutReady: false
     readonly property var availableLayouts: ["dwindle", "master", "scrolling"]
+
+    Process {
+        id: getLayoutProcess
+        command: ["hyprctl", "getoption", "general:layout", "-j"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const parsed = JSON.parse(text);
+                    if (parsed && typeof parsed.str === 'string') {
+                        const layout = parsed.str.trim();
+                        if (root.availableLayouts.includes(layout)) {
+                            root.compositorLayout = layout;
+                        } else {
+                            // Fallback if the layout isn't one of the known ones
+                            root.compositorLayout = StateService.get("compositorLayout", "dwindle");
+                        }
+                    } else {
+                        root.compositorLayout = StateService.get("compositorLayout", "dwindle");
+                    }
+                } catch (e) {
+                    console.warn("GlobalStates: Failed to parse hyprctl layout:", e);
+                    root.compositorLayout = StateService.get("compositorLayout", "dwindle");
+                }
+                root.compositorLayoutReady = true;
+            }
+        }
+    }
 
     function setCompositorLayout(layout) {
         if (availableLayouts.includes(layout)) {
             compositorLayout = layout;
             StateService.set("compositorLayout", layout);
-        }
-    }
-
-    Connections {
-        target: StateService
-        function onStateLoaded() {
-            root.compositorLayout = StateService.get("compositorLayout", "dwindle");
         }
     }
 
@@ -80,10 +100,8 @@ Singleton {
     Component.onCompleted: {
         // Reference the singleton to ensure it loads
         LockscreenService.toString();
-        // Load layout from state if StateService is already initialized
-        if (StateService.initialized) {
-            compositorLayout = StateService.get("compositorLayout", "dwindle");
-        }
+        // Fetch the active layout from the compositor
+        getLayoutProcess.running = true;
     }
 
     // Persistent launcher state across monitors

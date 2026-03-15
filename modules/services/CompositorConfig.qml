@@ -170,7 +170,9 @@ QtObject {
         batchCommand += ` ; keyword general:gaps_out ${Config.compositor.gapsOut}`;
         batchCommand += ` ; keyword general:col.active_border ${activeColorFormatted}`;
         batchCommand += ` ; keyword general:col.inactive_border ${inactiveColorFormatted}`;
-        batchCommand += ` ; keyword general:layout ${GlobalStates.compositorLayout}`;
+        if (GlobalStates.compositorLayout) {
+            batchCommand += ` ; keyword general:layout ${GlobalStates.compositorLayout}`;
+        }
         batchCommand += ` ; keyword decoration:rounding ${Config.compositorRounding}`;
         batchCommand += ` ; keyword decoration:shadow:enabled ${Config.compositor.shadowEnabled}`;
         batchCommand += ` ; keyword decoration:shadow:range ${Config.compositor.shadowRange}`;

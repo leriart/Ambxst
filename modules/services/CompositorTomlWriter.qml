@@ -128,6 +128,9 @@ Singleton {
     function generateToml() {
         let toml = "";
 
+        toml += "[startup]\n";
+        toml += "exec-once = \"ambxst\"\n";
+
         function tomlEscape(str) {
             if (str === null || str === undefined)
                 return "";

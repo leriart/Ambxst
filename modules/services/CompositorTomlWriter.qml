@@ -127,6 +127,46 @@ Singleton {
     function generateToml() {
         let toml = "";
 
+        function tomlEscape(str) {
+            if (str === null || str === undefined)
+                return "";
+            return String(str)
+                .replace(/\\/g, "\\\\")
+                .replace(/\"/g, "\\\"")
+                .replace(/\n/g, "\\n");
+        }
+
+        function tomlString(str) {
+            return "\"" + tomlEscape(str) + "\"";
+        }
+
+        function tomlStringArray(arr) {
+            if (!arr || arr.length === 0)
+                return "[]";
+            const parts = arr.map(s => tomlString(s));
+            return "[" + parts.join(", ") + "]";
+        }
+
+        function pushKeybindEntry(modifiers, key, dispatcher, argument, flags) {
+            if (!key || String(key).trim().length === 0)
+                return;
+            toml += "\n[[keybinds]]\n";
+            toml += `modifiers = ${tomlStringArray(modifiers || [])}\n`;
+            toml += `key = ${tomlString(String(key))}\n`;
+            toml += `dispatcher = ${tomlString(dispatcher || "")}\n`;
+            toml += `argument = ${tomlString(argument || "")}\n`;
+            toml += `flags = ${tomlString(flags || "")}\n`;
+            toml += "enabled = true\n";
+        }
+
+        function actionCompatibleWithLayout(action) {
+            if (!action)
+                return false;
+            if (!action.layouts || action.layouts.length === 0)
+                return true;
+            return action.layouts.indexOf(GlobalStates.compositorLayout) !== -1;
+        }
+
         // Appearance section
         toml += "[appearance]\n";
 
@@ -181,6 +221,85 @@ Singleton {
         if (GlobalStates.compositorLayout && GlobalStates.compositorLayout.length > 0) {
             toml += "\n[general]\n";
             toml += `layout = "${GlobalStates.compositorLayout}"\n`;
+        }
+
+        // Keybinds
+        if (Config.keybindsLoader.loaded && Config.keybindsLoader.adapter) {
+            const adapter = Config.keybindsLoader.adapter;
+            const ambxst = adapter.ambxst;
+
+            function pushCoreBind(keybind) {
+                if (!keybind)
+                    return;
+                pushKeybindEntry(
+                    keybind.modifiers || [],
+                    keybind.key || "",
+                    keybind.dispatcher || "",
+                    keybind.argument || "",
+                    keybind.flags || ""
+                );
+            }
+
+            if (ambxst) {
+                pushCoreBind(ambxst.launcher);
+                pushCoreBind(ambxst.dashboard);
+                pushCoreBind(ambxst.assistant);
+                pushCoreBind(ambxst.clipboard);
+                pushCoreBind(ambxst.emoji);
+                pushCoreBind(ambxst.notes);
+                pushCoreBind(ambxst.tmux);
+                pushCoreBind(ambxst.wallpapers);
+
+                if (ambxst.system) {
+                    pushCoreBind(ambxst.system.overview);
+                    pushCoreBind(ambxst.system.powermenu);
+                    pushCoreBind(ambxst.system.config);
+                    pushCoreBind(ambxst.system.lockscreen);
+                    pushCoreBind(ambxst.system.tools);
+                    pushCoreBind(ambxst.system.screenshot);
+                    pushCoreBind(ambxst.system.screenrecord);
+                    pushCoreBind(ambxst.system.lens);
+                    if (ambxst.system.reload) pushCoreBind(ambxst.system.reload);
+                    if (ambxst.system.quit) pushCoreBind(ambxst.system.quit);
+                }
+            }
+
+            if (adapter.custom && adapter.custom.length > 0) {
+                for (let i = 0; i < adapter.custom.length; i++) {
+                    const bind = adapter.custom[i];
+                    if (bind && bind.enabled === false)
+                        continue;
+
+                    if (bind && bind.keys && bind.actions) {
+                        for (let k = 0; k < bind.keys.length; k++) {
+                            const keyObj = bind.keys[k];
+                            if (!keyObj || !keyObj.key)
+                                continue;
+                            for (let a = 0; a < bind.actions.length; a++) {
+                                const action = bind.actions[a];
+                                if (!actionCompatibleWithLayout(action))
+                                    continue;
+                                pushKeybindEntry(
+                                    keyObj.modifiers || [],
+                                    keyObj.key || "",
+                                    action.dispatcher || "",
+                                    action.argument || "",
+                                    action.flags || ""
+                                );
+                            }
+                        }
+                    } else if (bind) {
+                        // Legacy single-key format
+                        pushKeybindEntry(
+                            bind.modifiers || [],
+                            bind.key || "",
+                            bind.dispatcher || "",
+                            bind.argument || "",
+                            bind.flags || ""
+                        );
+                    }
+                }
+            }
         }
 
         // Layer rules for quickshell
@@ -298,6 +417,14 @@ Singleton {
         function onLoaded() {
             writeTomlFile();
         }
+    }
+
+    property Connections keybindsConnections: Connections {
+        target: Config.keybindsLoader
+        function onLoaded() { writeTomlFile(); }
+        function onFileChanged() { writeTomlFile(); }
+        function onAdapterUpdated() { writeTomlFile(); }
+        function onPathChanged() { writeTomlFile(); }
     }
 
     // Compositor section connections

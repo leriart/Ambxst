@@ -373,36 +373,7 @@ Singleton {
         toml += "blur_popups = true\n";
         toml += "no_anim = true\n";
 
-        // Window rules
-        toml += "\n[[window_rules]]\n";
-        toml += 'match = "class:^(org.gnome.Calculator)$"\n';
-        toml += "float = true\n";
 
-        toml += "\n[[window_rules]]\n";
-        toml += 'match = "title:^(Picture-in-Picture)$"\n';
-        toml += "float = true\n";
-        toml += 'move = "center"\n';
-        toml += 'size = "480x270"\n';
-        toml += "pin = true\n";
-
-        toml += "\n[[window_rules]]\n";
-        toml += 'match = "class:^(fl64.exe)$"\n';
-        toml += "no_blur = true\n";
-
-        toml += "\n[[window_rules]]\n";
-        toml += 'match = "class:^(librewolf)$"\n';
-        toml += "no_screen_share = true\n";
-
-        toml += "\n[[window_rules]]\n";
-        toml += 'match = "title:.*"\n';
-        toml += "idle_inhibit = true\n";
-        toml += "fullscreen = true\n";
-
-        toml += "\n[[window_rules]]\n";
-        toml += 'match = "class:^(audacious)$"\n';
-        toml += "rounding = 0\n";
-        toml += "no_shadow = true\n";
-        toml += "border_size = 0\n";
 
         // Input section (placeholder for keyboard layout)
         toml += "\n[input]\n";
